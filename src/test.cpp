@@ -127,12 +127,15 @@ int main(int argc, char* argv[]) {
     int consumer_cpu = -1;
     if (argc > 1) {
         producer_cpu = std::atoi(argv[1]);
-        if (argc > 2) {
-            consumer_cpu = std::atoi(argv[2]);
-        }
     }
-  int i = 0;
-  while (++i < 100) {
+    
+    if (argc > 2) {
+        consumer_cpu = std::atoi(argv[2]);
+    }
+
+    int i = 10;
+
+  while (--i >= 0) {
     test(producer_cpu, consumer_cpu);
   }
 

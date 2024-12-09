@@ -18,7 +18,6 @@ target_compile_options(ringbuffer_test PRIVATE "$<$<CONFIG:Debug>:${_COMPILE_DEB
 
 target_compile_options(ringbuffer_test PRIVATE "$<$<CONFIG:Release>:${COMPILE_RELEASE_OPTIONS}>")
 
-
 enable_testing()
 
 add_test(ringbuffer_test ringbuffer_test)
