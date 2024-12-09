@@ -12,3 +12,20 @@ cmake -S . -B build/ -D CMAKE_BUILD_TYPE=Release
 
 # Build the release binary
 cmake --build build/
+
+# My local CPU information so far 
+
+Architecture:             x86_64
+  CPU op-mode(s):         32-bit, 64-bit
+  Address sizes:          39 bits physical, 48 bits virtual
+  Byte Order:             Little Endian
+CPU(s):                   16
+  On-line CPU(s) list:    0-15
+Vendor ID:                GenuineIntel
+  Model name:             11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz
+    CPU family:           6
+    Model:                167
+    Thread(s) per core:   2
+    Core(s) per socket:   8
+    Socket(s):            1
+    Stepping:             1
