@@ -1,3 +1,6 @@
+[![C++ CI](https://github.com/standrey/ringbuffer/workflows/C++%20CI%20on%20github/badge.svg)](https://github.com/standrey/ringbuffer/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/standrey/ringbuffer/master/LICENSE)
+
 A single producer - single consumer wait-free and lock-free fixed size queue written in C++17.
 The implementation is just an answer to the pre-technical interview that has been successfully failed.
 
