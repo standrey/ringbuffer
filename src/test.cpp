@@ -60,7 +60,7 @@ void pinthread(int cpu) {
     }
 }
 
-void test() {
+void test(int producer_cpu = -1, int consumer_cpu = -1) {
 
   using namespace ringbuffer;
   constexpr size_t k_count = 10'000'000;
@@ -78,7 +78,7 @@ void test() {
     hash_calculator hash;
     stopwatch watch;
 
-        pinthread(0);
+        pinthread(producer_cpu);
 
     for (size_t i = 0; i < k_count; ++i) {
       hash.set(i);
@@ -95,7 +95,7 @@ void test() {
   std::thread consumer([&]() {
     hash_calculator hash;
     stopwatch watch;
-        pinthread(1);
+        pinthread(consumer_cpu);
 
     for (size_t i = 0; i < k_count; ++i) {
       int value;
@@ -123,9 +123,17 @@ void test() {
 }
 
 int main(int argc, char* argv[]) {
+    int producer_cpu = -1;
+    int consumer_cpu = -1;
+    if (argc > 1) {
+        producer_cpu = std::atoi(argv[1]);
+        if (argc > 2) {
+            consumer_cpu = std::atoi(argv[2]);
+        }
+    }
   int i = 0;
   while (++i < 100) {
-    test();
+    test(producer_cpu, consumer_cpu);
   }
 
   return 0;
