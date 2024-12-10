@@ -2,30 +2,32 @@
 #include <cassert>
 #include <cstddef>
 #include <vector>
+#include <stdexcept>
 
 namespace ringbuffer {
 
-template<typename t_value>
+template<typename T>
 class ring_buffer {
 public:
-  explicit ring_buffer(size_t _capacity) : storage_(_capacity), capacity_(_capacity) {
-    assert(_capacity != 0);
-  }
-
-  bool push(t_value _value) noexcept {
-    if (next_tail_ == head_.load(std::memory_order_acquire)) {
-      return false;
+    explicit ring_buffer(size_t _capacity) : storage_(_capacity), capacity_(_capacity) {
+        assert(_capacity != 0);
+        if (_capacity == 0) throw std::runtime_error("ring_buffer capacity must be greate than zero");
     }
-    
-    storage_[tail_.load(std::memory_order_relaxed)] = std::move(_value);
-    tail_.store(next_tail_, std::memory_order_release);
 
-    next_tail_ = get_next(next_tail_);
+    template <typename ... Args>
+    bool push(Args && ... args) noexcept {
+        if (next_tail_ == head_.load(std::memory_order_acquire)) {
+            return false;
+        }
 
-    return true;
-  }
+        new (&storage_[tail_.load(std::memory_order_relaxed)]) T(std::forward<Args>(args)...);
+        tail_.store(next_tail_, std::memory_order_release);
 
-  bool pop(t_value& _value) noexcept {   
+        next_tail_ = get_next(next_tail_);
+        return true;
+    }
+
+  bool pop(T& _value) noexcept {
     auto cached = head_.load(std::memory_order_relaxed);
     if (tail_.load(std::memory_order_acquire) == cached) { return false; }
 
@@ -42,7 +44,7 @@ private:
     return (_slot == capacity_) ? 0 : _slot;
   }
 
-    std::vector<t_value> storage_;
+    std::vector<T> storage_;
     size_t capacity_ = { 0 };
     std::atomic<size_t> head_ = { 0 };
     std::atomic<size_t> tail_ = { 0 };
