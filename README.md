@@ -17,6 +17,7 @@ cmake -S . -B build/ -D CMAKE_BUILD_TYPE=Release
 cmake --build build/
 
 # My local CPU information so far 
+![mylocalpc](https://github.com/user-attachments/assets/84959587-24c2-47f2-8f19-04a842ce7bb8)
 
 Architecture:             x86_64
   CPU op-mode(s):         32-bit, 64-bit
