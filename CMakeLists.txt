@@ -4,11 +4,9 @@ project(ringbuffer VERSION 1.0 LANGUAGES CXX)
 
 add_executable(ringbuffer_test src/test.cpp)
 
-target_compile_features(ringbuffer_test PRIVATE cxx_std_17)
-
 target_include_directories(ringbuffer_test PRIVATE include)
 
-set(COMPILE_OPTIONS "-m64;-fPIC;-fno-strict-aliasing;-Wall;-Wextra;-Wpedantic;-Wno-multichar;-Wno-comment;-Wno-sign-compare;-funsigned-char;-pthread;-Wno-deprecated;-Wno-reorder;-ftemplate-depth-64;-fno-gnu-keywords;-std=c++0x;-Winline;-pthread")
+set(COMPILE_OPTIONS "-m64;-fPIC;-fno-strict-aliasing;-Wall;-Wextra;-Wpedantic;-Wno-multichar;-Wno-comment;-Wno-sign-compare;-funsigned-char;-pthread;-Wno-deprecated;-Wno-reorder;-ftemplate-depth-64;-fno-gnu-keywords;-std=c++17;-Winline")
 
 set(COMPILE_DEBUG_OPTIONS "${COMPILE_OPTIONS};-fsanitize=thread;-O2")
 
