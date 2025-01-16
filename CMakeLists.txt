@@ -4,11 +4,7 @@ project(ringbuffer VERSION 1.0 LANGUAGES CXX)
 
 set(TARGET_NAME ringbuffer_test)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release"
-      CACHE STRING "Build type: Release, Debug, MinSizeRel or RelWithDebInfo"
-            FORCE)
-endif()
+include(cmake/BuildType.cmake)
 
 add_executable(${TARGET_NAME} src/test.cpp)
 
