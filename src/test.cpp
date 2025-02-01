@@ -11,40 +11,42 @@
 #define M_SOURCE __FILE__ ":" M_TO_STRING(__LINE__)
 
 class stopwatch {
+
+private:
   using clock_type = std::chrono::steady_clock;
 
 public:
   stopwatch() {
-    start_ = clock_type::now();
+    start_point clock_type::now();
   }
 
   template<typename t_duration>
   t_duration elapsed_duration() const {
     using namespace std::chrono;
 
-    auto delta = clock_type::now() - start_;
+    auto delta = clock_type::now() - start_point;
     return duration_cast<t_duration>(delta);
   }
 
 private:
-  clock_type::time_point start_;
+  clock_type::time_point start_point;
 };
 
 
 class hash_calculator {
  public:
   template <typename t_value>
-  void set(const t_value& _value) {
+  void set(const t_value& _value) noexcept {
     digest_ = std::hash<t_value>()(_value) ^ (digest_ << 1);
   }
 
-  size_t value() const { return digest_; }
+  size_t value() const noexcept { return digest_; }
 
  private:
   size_t digest_ = 0;
 };
 
-void pinthread(int cpu) {
+void pin_thread(int cpu) {
     if (cpu < 0) {
         return;
     }
@@ -77,8 +79,7 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
   std::thread producer([&]() {
     hash_calculator hash;
     stopwatch watch;
-
-        pinthread(producer_cpu);
+    pinthread(producer_cpu);
 
     for (size_t i = 0; i < k_count; ++i) {
       hash.set(i);
@@ -95,7 +96,7 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
   std::thread consumer([&]() {
     hash_calculator hash;
     stopwatch watch;
-        pinthread(consumer_cpu);
+    pinthread(consumer_cpu);
 
     for (size_t i = 0; i < k_count; ++i) {
       int value;
@@ -135,9 +136,9 @@ int main(int argc, char* argv[]) {
 
     int i = 10;
 
-  while (--i >= 0) {
-    test(producer_cpu, consumer_cpu);
-  }
+    while (--i >= 0) {
+        test(producer_cpu, consumer_cpu);
+    }
 
   return 0;
 }

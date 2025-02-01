@@ -13,7 +13,7 @@ public:
     explicit ring_buffer(size_t _capacity) : storage_(_capacity), capacity_(_capacity) {
         assert(_capacity != 0);
         if (_capacity == 0)  {
-            throw std::runtime_error("ring_buffer capacity must be greate than zero");
+            throw std::runtime_error("ring_buffer capacity must be greater than zero");
         }
     }
 
@@ -29,7 +29,7 @@ public:
         new (&storage_[tail_.load(std::memory_order_relaxed)]) T(std::forward<Args>(args)...);
         tail_.store(next_tail_, std::memory_order_release);
 
-        next_tail_ = get_next(next_tail_);
+        next_tail_ = get_next_index(next_tail_);
         return true;
     }
 
@@ -41,22 +41,22 @@ public:
         }
 
         _value = std::move(storage_[cached_head]);
-        head_.store(get_next(cached_head), std::memory_order_relaxed);
+        head_.store(get_next_index(cached_head), std::memory_order_relaxed);
         return true;
     }
 
 private:
 
-    inline size_t get_next(size_t _slot) const noexcept {
+    inline size_t get_next_index(size_t _slot) const noexcept {
         ++_slot;
         return (_slot == capacity_) ? 0 : _slot;
     }
 
     std::vector<T> storage_;
-    size_t capacity_ = { 0 };
-    alignas(std::hardware_destructive_interference_size) std::atomic<size_t> head_ = { 0 };
-    alignas(std::hardware_destructive_interference_size) std::atomic<size_t> tail_ = { 0 };
-    size_t next_tail_ = { tail_ + 1 };
+    size_t capacity_{ 0 };
+    alignas(std::hardware_destructive_interference_size) std::atomic<size_t> head_{ 0 };
+    alignas(std::hardware_destructive_interference_size) std::atomic<size_t> tail_{ 0 };
+    size_t next_tail_{ tail_ + 1 };
 };
 
 } // ringbuffer
