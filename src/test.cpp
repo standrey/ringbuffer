@@ -16,9 +16,7 @@ private:
   using clock_type = std::chrono::steady_clock;
 
 public:
-  stopwatch() {
-    start_point clock_type::now();
-  }
+  stopwatch() : start_point(clock_type::now()) {}
 
   template<typename t_duration>
   t_duration elapsed_duration() const {
@@ -46,7 +44,7 @@ class hash_calculator {
   size_t digest_ = 0;
 };
 
-void pin_thread(int cpu) {
+void pinthread(int cpu) {
     if (cpu < 0) {
         return;
     }
@@ -68,7 +66,7 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
   constexpr size_t k_count = 10'000'000;
   constexpr size_t k_size = 1024;
 
-  ring_buffer<int> buffer(k_size);
+  ring_buffer<int> rb(k_size);
 
   size_t producer_hash = 0;
   std::chrono::milliseconds producer_time;
@@ -76,7 +74,7 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
   size_t consumer_hash = 0;
   std::chrono::milliseconds consumer_time;
 
-  std::thread producer([&]() {
+  std::jthread producer([&]() {
     hash_calculator hash;
     stopwatch watch;
     pinthread(producer_cpu);
@@ -84,7 +82,7 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
     for (size_t i = 0; i < k_count; ++i) {
       hash.set(i);
 
-      while (!buffer.push(i)) {
+      while (!rb.push(i)) {
         std::this_thread::yield();
       }
     }
@@ -93,7 +91,7 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
     producer_hash = hash.value();
   });
 
-  std::thread consumer([&]() {
+  std::jthread consumer([&]() {
     hash_calculator hash;
     stopwatch watch;
     pinthread(consumer_cpu);
@@ -101,7 +99,7 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
     for (size_t i = 0; i < k_count; ++i) {
       int value;
 
-      while (!buffer.pop(value)) {
+      while (!rb.pop(value)) {
         std::this_thread::yield();
       }
 
@@ -111,9 +109,6 @@ void test(int producer_cpu = -1, int consumer_cpu = -1) {
     consumer_time = watch.elapsed_duration<std::chrono::milliseconds>();
     consumer_hash = hash.value();
   });
-
-  producer.join();
-  consumer.join();
 
   if (producer_hash != consumer_hash) {
     std::cerr << "Workers hash must be equal\n";
