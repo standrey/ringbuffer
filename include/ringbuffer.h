@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <new>
 #include <concepts>
+#include <type_traits>
 
 namespace ringbuffer {
 

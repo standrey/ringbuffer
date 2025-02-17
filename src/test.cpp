@@ -62,11 +62,10 @@ void pinthread(int cpu) {
 
 void test(int producer_cpu = -1, int consumer_cpu = -1) {
 
-  using namespace ringbuffer;
   constexpr size_t k_count = 10'000'000;
   constexpr size_t k_size = 1024;
 
-  ring_buffer<int> rb(k_size);
+  ringbuffer::ring_buffer<int> rb(k_size);
 
   size_t producer_hash = 0;
   std::chrono::milliseconds producer_time;
